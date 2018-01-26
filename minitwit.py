@@ -10,43 +10,47 @@
 """
 
 import time
-from sqlite3 import dbapi2 as sqlite3
+#from sqlite3 import dbapi2 as sqlite3
 from hashlib import md5
 from datetime import datetime
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash, _app_ctx_stack
 from werkzeug import check_password_hash, generate_password_hash
+import pymysql
+import keys
 
 
 # configuration
-DATABASE = '/tmp/minitwit.db'
+DATABASE = keys.DATABASE
+DB_USER = keys.DB_USER
+DB_PASS = keys.DB_PASS
+DB_NAME = keys.DB_NAME
 PER_PAGE = 30
 DEBUG = True
-SECRET_KEY = b'_5#y2L"F4Q8z\n\xec]/'
+SECRET_KEY = keys.SECRET_KEY
 
 # create our little application :)
 app = Flask('minitwit')
 app.config.from_object(__name__)
 app.config.from_envvar('MINITWIT_SETTINGS', silent=True)
 
-
 def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
     """
     top = _app_ctx_stack.top
-    if not hasattr(top, 'sqlite_db'):
-        top.sqlite_db = sqlite3.connect(app.config['DATABASE'])
-        top.sqlite_db.row_factory = sqlite3.Row
-    return top.sqlite_db
+    if not hasattr(top, 'db'):
+        top.db = pymysql.connect(app.config['DATABASE'], app.config['DB_USER'], app.config['DB_PASS'], app.config['DB_NAME'])
+        top.db.row_factory = pymysql.Row
+    return top.db
 
 
 @app.teardown_appcontext
 def close_database(exception):
     """Closes the database again at the end of the request."""
     top = _app_ctx_stack.top
-    if hasattr(top, 'sqlite_db'):
-        top.sqlite_db.close()
+    if hasattr(top, 'db'):
+        top.db.close()
 
 
 def init_db():
