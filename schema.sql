@@ -1,4 +1,4 @@
-set max_allowed_packet=67108864
+--set max_allowed_packet=67108864;
 
 drop table if exists user;
 create table user (
