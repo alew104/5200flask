@@ -57,7 +57,7 @@ def init_db():
     """Initializes the database."""
     db = get_db()
     for line in open('schema.sql'):
-        db.cursor.execute(line)
+        db.execute(line)
     #with app.open_resource('schema.sql', mode='r') as f:
         #db.cursor().executescript(f.read())
     db.commit()
