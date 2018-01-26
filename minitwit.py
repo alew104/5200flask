@@ -133,20 +133,20 @@ def public_timeline():
 @app.route('/<username>')
 def user_timeline(username):
     """Display's a users tweets."""
-    profile_user = query_db('select * from user where username = ?',
-                            username, one=True)
+    profile_user = query_db('select * from user where username = %s',
+                            [username], one=True)
     if profile_user is None:
         abort(404)
     followed = False
     if g.user:
         followed = query_db('''select 1 from follower where
-            follower.who_id = ? and follower.whom_id = ?''',
+            follower.who_id = %s and follower.whom_id = %s''',
             [session['user_id'], profile_user['user_id']],
             one=True) is not None
     return render_template('timeline.html', messages=query_db('''
             select message.*, user.* from message, user where
-            user.user_id = message.author_id and user.user_id = ?
-            order by message.pub_date desc limit ?''',
+            user.user_id = message.author_id and user.user_id = %s
+            order by message.pub_date desc limit %s''',
             [profile_user['user_id'], PER_PAGE]), followed=followed,
             profile_user=profile_user)
 
