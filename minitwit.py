@@ -40,7 +40,7 @@ def get_db():
     """
     top = _app_ctx_stack.top
     if not hasattr(top, 'db'):
-        top.db = pymysql.connect(app.config['DATABASE'], app.config['DB_USER'], app.config['DB_PASS'], app.config['DB_NAME'])
+        top.db = pymysql.connect(host=app.config['DATABASE'],user= app.config['DB_USER'],passwd= app.config['DB_PASS'],db= app.config['DB_NAME'], port=3306)
         top.db.row_factory = pymysql.Row
     return top.db
 
