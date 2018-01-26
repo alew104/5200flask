@@ -1,5 +1,3 @@
---set max_allowed_packet=67108864;
-
 drop table if exists user;
 create table user (
 user_id int primary key auto_increment,

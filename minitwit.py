@@ -56,11 +56,12 @@ def close_database(exception):
 def init_db():
     """Initializes the database."""
     db = get_db()
+    #db.execute('set global max_allowed_packet=67108864')
     #for line in open('schema.sql'):
         #db.execute(line)
     with app.open_resource('schema.sql', mode='r') as f:
         db.execute(f.read())
-    db.commit()
+    #db.commit()
 
 
 @app.cli.command('initdb')
