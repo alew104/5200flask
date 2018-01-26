@@ -157,8 +157,10 @@ def follow_user(username):
     if whom_id is None:
         abort(404)
     db = get_db()
-    db.execute('insert into follower (who_id, whom_id) values (' + [session['user_id'] + ',' + whom_id + ')'
-    #db.commit()
+    user = session['user_id']
+    query = 'insert into follower (who_id, whom_id) values (' + str(user) + ',' + str(whom_id) + ')'
+    db.execute(query)
+    db.commit()
     flash('You are now following "%s"' % username)
     return redirect(url_for('user_timeline', username=username))
 
