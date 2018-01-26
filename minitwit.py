@@ -16,7 +16,7 @@ from datetime import datetime
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash, _app_ctx_stack
 from werkzeug import check_password_hash, generate_password_hash
-import pymysql
+import MySQLdb
 import keys
 
 
@@ -40,7 +40,7 @@ def get_db():
     """
     top = _app_ctx_stack.top
     if not hasattr(top, 'db'):
-        top.db = pymysql.connect(host=app.config['DATABASE'],user= app.config['DB_USER'],passwd= app.config['DB_PASS'],db= app.config['DB_NAME'], port=3306)
+        top.db = MySQLdb.connect(host=app.config['DATABASE'],user= app.config['DB_USER'],passwd= app.config['DB_PASS'],db= app.config['DB_NAME'], port=3306)
         #top.db.row_factory = pymysql.fetchone()
     return top.db.cursor()
 
