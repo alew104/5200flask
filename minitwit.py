@@ -56,8 +56,10 @@ def close_database(exception):
 def init_db():
     """Initializes the database."""
     db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
-        db.cursor().executescript(f.read())
+    for line in open(PATH_TO_FILE):
+        db.cursor.execute(line)
+    #with app.open_resource('schema.sql', mode='r') as f:
+        #db.cursor().executescript(f.read())
     db.commit()
 
 
@@ -125,14 +127,14 @@ def public_timeline():
     return render_template('timeline.html', messages=query_db('''
         select message.*, user.* from message, user
         where message.author_id = user.user_id
-        order by message.pub_date desc limit ?''', [PER_PAGE]))
+        order by message.pub_date desc limit %s''', [PER_PAGE]))
 
 
 @app.route('/<username>')
 def user_timeline(username):
     """Display's a users tweets."""
     profile_user = query_db('select * from user where username = ?',
-                            username, one=True)
+                            username,), one=True)
     if profile_user is None:
         abort(404)
     followed = False
