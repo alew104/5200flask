@@ -56,10 +56,10 @@ def close_database(exception):
 def init_db():
     """Initializes the database."""
     db = get_db()
-    for line in open('schema.sql'):
-        db.execute(line)
-    #with app.open_resource('schema.sql', mode='r') as f:
-        #db.cursor().executescript(f.read())
+    #for line in open('schema.sql'):
+        #db.execute(line)
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.execute(f.read())
     db.commit()
 
 
