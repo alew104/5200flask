@@ -134,7 +134,7 @@ def public_timeline():
 def user_timeline(username):
     """Display's a users tweets."""
     profile_user = query_db('select * from user where username = ?',
-                            username,), one=True)
+                            username, one=True)
     if profile_user is None:
         abort(404)
     followed = False
