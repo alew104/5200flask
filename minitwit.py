@@ -70,9 +70,12 @@ def initdb_command():
 
 def query_db(query, args=(), one=False):
     """Queries the database and returns a list of dictionaries."""
-    cur = get_db().execute(query, args)
-    rv = get_db().fetchall()
-    return (rv[0] if rv else None) if one else rv
+    conn = get_db()
+    conn.execute(query, args)
+    rv = conn.fetchall()
+    #cur = get_db().execute(query, args)
+    #rv = cur.fetchall()
+    return (cur[0] if cur else None) if one else cur
 
 
 def get_user_id(username):
