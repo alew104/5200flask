@@ -159,7 +159,7 @@ def follow_user(username):
     if whom_id is None:
         abort(404)
     db = get_db()
-    db.execute('insert into follower (who_id, whom_id) values (?, ?)',
+    db.execute('insert into follower (who_id, whom_id) values (%s, %s)',
               [session['user_id'], whom_id])
     db.commit()
     flash('You are now following "%s"' % username)
@@ -175,7 +175,7 @@ def unfollow_user(username):
     if whom_id is None:
         abort(404)
     db = get_db()
-    db.execute('delete from follower where who_id=? and whom_id=?',
+    db.execute('delete from follower where who_id=%s and whom_id=%s',
               [session['user_id'], whom_id])
     db.commit()
     flash('You are no longer following "%s"' % username)
@@ -190,7 +190,7 @@ def add_message():
     if request.form['text']:
         db = get_db()
         db.execute('''insert into message (author_id, text, pub_date)
-          values (?, ?, ?)''', [session['user_id'], request.form['text'],
+          values (%s, %s, %s)''', [session['user_id'], request.form['text'],
                                 int(time.time())])
         db.commit()
         flash('Your message was recorded')
@@ -239,7 +239,7 @@ def register():
         else:
             db = get_db()
             db.execute('''insert into user (
-              username, email, pw_hash) values (?, ?, ?)''',
+              username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
             db.commit()
