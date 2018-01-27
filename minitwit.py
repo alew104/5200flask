@@ -78,7 +78,7 @@ def query_db(query, args=(), one=False):
 
 def get_user_id(username):
     """Convenience method to look up the id for a username."""
-    rv = query_db('select user_id from user where username = ?',
+    rv = query_db('select user_id from user where username = %s',
                   [username], one=True)
     return rv[0] if rv else None
 
@@ -98,7 +98,7 @@ def gravatar_url(email, size=80):
 def before_request():
     g.user = None
     if 'user_id' in session:
-        g.user = query_db('select * from user where user_id = ?',
+        g.user = query_db('select * from user where user_id = %s',
                           [session['user_id']], one=True)
 
 
@@ -113,10 +113,10 @@ def timeline():
     return render_template('timeline.html', messages=query_db('''
         select message.*, user.* from message, user
         where message.author_id = user.user_id and (
-            user.user_id = ? or
+            user.user_id = %s or
             user.user_id in (select whom_id from follower
-                                    where who_id = ?))
-        order by message.pub_date desc limit ?''',
+                                    where who_id = %s))
+        order by message.pub_date desc limit %s''',
         [session['user_id'], session['user_id'], PER_PAGE]))
 
 
@@ -205,7 +205,7 @@ def login():
     error = None
     if request.method == 'POST':
         user = query_db('''select * from user where
-            username = ?''', [request.form['username']], one=True)
+            username = %s''', [request.form['username']], one=True)
         if user is None:
             error = 'Invalid username'
         elif not check_password_hash(user['pw_hash'],
