@@ -73,9 +73,7 @@ def query_db(query, args=(), one=False):
     conn = get_db()
     conn.execute(query, args)
     rv = conn.fetchall()
-    #cur = get_db().execute(query, args)
-    #rv = cur.fetchall()
-    return (cur[0] if cur else None) if one else cur
+    return (rv[0] if rv else None) if one else rv
 
 
 def get_user_id(username):
