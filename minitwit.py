@@ -56,9 +56,6 @@ def close_database(exception):
 def init_db():
     """Initializes the database."""
     db = get_db()
-    #db.execute('set global max_allowed_packet=67108864')
-    #for line in open('schema.sql'):
-        #db.execute(line)
     with app.open_resource('schema.sql', mode='r') as f:
         db.execute(f.read())
     #db.commit()
@@ -74,7 +71,7 @@ def initdb_command():
 def query_db(query, args=(), one=False):
     """Queries the database and returns a list of dictionaries."""
     cur = get_db().execute(query, args)
-    rv = cur.fetchall()
+    rv = get_db().fetchall()
     return (rv[0] if rv else None) if one else rv
 
 
