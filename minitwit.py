@@ -205,7 +205,7 @@ def login():
     error = None
     if request.method == 'POST':
         user = query_db('''select * from user where
-            username = %s''', [request.form['username']], one=True)
+            username = %s''', [request.form['username']], one=True).fetchall()
         if user is None:
             error = 'Invalid username'
         elif not check_password_hash(user['pw_hash'],
@@ -242,6 +242,7 @@ def register():
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
+               print(generate_password_hash(request.form['password'], file=sys.stderr)
             #db.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
