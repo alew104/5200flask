@@ -8,7 +8,7 @@
     :copyright: (c) 2015 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
-
+from __future__ import print_function
 import time
 #from sqlite3 import dbapi2 as sqlite3
 from hashlib import md5
@@ -19,7 +19,7 @@ from werkzeug import check_password_hash, generate_password_hash
 import MySQLdb
 import keys
 import sys
-from __future__ import print_function
+
 
 
 # configuration
