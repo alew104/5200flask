@@ -18,6 +18,8 @@ from flask import Flask, request, session, url_for, redirect, \
 from werkzeug import check_password_hash, generate_password_hash
 import MySQLdb
 import keys
+import sys
+from __future__ import print_function
 
 
 # configuration
@@ -242,7 +244,7 @@ def register():
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
-            print(generate_password_hash(request.form['password'], file=sys.stderr)
+            print(generate_password_hash(request.form['password']), file=sys.stderr)
             #db.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
