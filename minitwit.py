@@ -242,7 +242,7 @@ def register():
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
-               print(generate_password_hash(request.form['password'], file=sys.stderr)
+            print(generate_password_hash(request.form['password'], file=sys.stderr)
             #db.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
