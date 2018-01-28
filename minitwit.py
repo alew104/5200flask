@@ -45,7 +45,7 @@ def get_db():
     if not hasattr(top, 'db'):
         top.db = MySQLdb.connect(host=app.config['DATABASE'],user= app.config['DB_USER'],passwd= app.config['DB_PASS'],db= app.config['DB_NAME'], port=3306, cursorclass = DictCursor)
         #top.db.row_factory = pymysql.fetchone()
-    return top.db.cursor()
+    return top.db
 
 
 @app.teardown_appcontext
@@ -58,7 +58,7 @@ def close_database(exception):
 
 def init_db():
     """Initializes the database."""
-    db = get_db()
+    db = get_db().cursor()
     with app.open_resource('schema.sql', mode='r') as f:
         db.execute(f.read())
     #db.commit()
@@ -73,7 +73,7 @@ def initdb_command():
 
 def query_db(query, args=(), one=False):
     """Queries the database and returns a list of dictionaries."""
-    conn = get_db()
+    conn = get_db().cursor()
     conn.execute(query, args)
     rv = conn.fetchall()
     return (rv[0] if rv else None) if one else rv
@@ -161,7 +161,7 @@ def follow_user(username):
     whom_id = get_user_id(username)
     if whom_id is None:
         abort(404)
-    db = get_db()
+    db = get_db().cursor()
     db.execute('insert into follower (who_id, whom_id) values (%s, %s)',
               [session['user_id'], whom_id])
     #db.commit()
@@ -177,7 +177,7 @@ def unfollow_user(username):
     whom_id = get_user_id(username)
     if whom_id is None:
         abort(404)
-    db = get_db()
+    db = get_db().cursor()
     db.execute('delete from follower where who_id=%s and whom_id=%s',
               [session['user_id'], whom_id])
     #db.commit()
@@ -191,7 +191,7 @@ def add_message():
     if 'user_id' not in session:
         abort(401)
     if request.form['text']:
-        db = get_db()
+        db = get_db().cursor()
         db.execute('''insert into message (author_id, text, pub_date)
           values (%s, %s, %s)''', [session['user_id'], request.form['text'],
                                 int(time.time())])
@@ -240,7 +240,7 @@ def register():
         elif get_user_id(request.form['username']) is not None:
             error = 'The username is already taken'
         else:
-            db = get_db()
+            db = get_db().cursor()
             db.execute('''insert into user (
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
