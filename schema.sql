@@ -1,10 +1,9 @@
 drop table if exists user;
 create table user (
-user_id int auto_increment,
-username varchar(40) not null,
-email varchar(40) not null,
-pw_hash varchar(255) not null,
-PRIMARY KEY ('user_id')
+user_id int primary key auto_increment,
+username varchar(100) not null,
+email varchar(100) not null,
+pw_hash varchar(500) not null
 );
 
 drop table if exists follower;
@@ -15,9 +14,8 @@ whom_id int
 
 drop table if exists message;
 create table message (
-message_id int auto_increment,
+message_id int primary key auto_increment,
 author_id int not null,
-text varchar(255) not null,
-pub_date int,
-PRIMARY KEY ('message_id')
+text varchar(500) not null,
+pub_date int
 );
