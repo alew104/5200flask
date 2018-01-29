@@ -161,10 +161,11 @@ def follow_user(username):
     whom_id = get_user_id(username)
     if whom_id is None:
         abort(404)
-    db = get_db().cursor()
+    conn = get_db()
+    db = conn.cursor()
     db.execute('insert into follower (who_id, whom_id) values (%s, %s)',
               [session['user_id'], whom_id])
-    db.commit()
+    conn.commit()
     flash('You are now following "%s"' % username)
     return redirect(url_for('user_timeline', username=username))
 
@@ -177,10 +178,11 @@ def unfollow_user(username):
     whom_id = get_user_id(username)
     if whom_id is None:
         abort(404)
-    db = get_db().cursor()
+    conn = get_db()
+    db = conn.cursor()
     db.execute('delete from follower where who_id=%s and whom_id=%s',
               [session['user_id'], whom_id])
-    db.commit()
+    conn.commit()
     flash('You are no longer following "%s"' % username)
     return redirect(url_for('user_timeline', username=username))
 
@@ -191,11 +193,12 @@ def add_message():
     if 'user_id' not in session:
         abort(401)
     if request.form['text']:
-        db = get_db().cursor()
+        conn = get_db()
+        db = conn.cursor()
         db.execute('''insert into message (author_id, text, pub_date)
           values (%s, %s, %s)''', [session['user_id'], request.form['text'],
                                 int(time.time())])
-        db.commit()
+        conn.commit()
         flash('Your message was recorded')
     return redirect(url_for('timeline'))
 
@@ -240,13 +243,14 @@ def register():
         elif get_user_id(request.form['username']) is not None:
             error = 'The username is already taken'
         else:
-            db = get_db().cursor()
+            conn = get_db()
+            db = conn.cursor()
             db.execute('''insert into user (
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
             print(generate_password_hash(request.form['password']), file=sys.stderr)
-            db.commit()
+            conn.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
     return render_template('register.html', error=error)
