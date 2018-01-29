@@ -8,9 +8,7 @@
     :copyright: (c) 2015 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
-from __future__ import print_function
 import time
-#from sqlite3 import dbapi2 as sqlite3
 from hashlib import md5
 from datetime import datetime
 from flask import Flask, request, session, url_for, redirect, \
@@ -19,7 +17,6 @@ from werkzeug import check_password_hash, generate_password_hash
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 import keys
-import sys
 
 
 
@@ -43,8 +40,7 @@ def get_db():
     """
     top = _app_ctx_stack.top
     if not hasattr(top, 'db'):
-        top.db = MySQLdb.connect(host=app.config['DATABASE'],user= app.config['DB_USER'],passwd= app.config['DB_PASS'],db= app.config['DB_NAME'], port=3306, cursorclass = DictCursor)
-        #top.db.row_factory = pymysql.fetchone()
+        top.db = MySQLdb.connect(host=app.config['DATABASE'], user=app.config['DB_USER'], passwd=app.config['DB_PASS'], db=app.config['DB_NAME'], port=3306, cursorclass=DictCursor)
     return top.db
 
 
@@ -249,7 +245,6 @@ def register():
               username, email, pw_hash) values (%s, %s, %s)''',
               [request.form['username'], request.form['email'],
                generate_password_hash(request.form['password'])])
-            print(generate_password_hash(request.form['password']), file=sys.stderr)
             conn.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
